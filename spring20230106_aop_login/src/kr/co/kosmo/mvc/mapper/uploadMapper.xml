@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="upload">
+	<insert id="insert" parameterType="uvo">
+		insert into upload values(upload_seq.nextVal, #{sub }, #{writer }, #{pw }, #{cont }, #{imgn }, sysdate)
+	</insert>
+	<select id="count" resultType="int">
+		select count(*) from upload
+	</select>
+	<select id="paginate2" parameterType="psvo" resultType="uvo">
+		select * from upload
+		<if test="searchType != null and searchValue != null">
+			<where>
+				<choose>
+					<when test="searchType == 1">sub like '%' || #{searchValue } || '%'</when>
+					<when test="searchType == 2">writer like '%' || #{searchValue } || '%'</when>
+				</choose>
+			</where>
+		</if>
+		<where>
+			num between #{begin } and #{end }
+		</where>
+		order by num desc
+	</select>
+	<select id="paginate" parameterType="psvo" resultType="uvo">
+		select * from (select rownum r_num, a.* from (select * from upload
+		<if test="searchType != null and searchValue != null">
+			<where>
+				<choose>
+					<when test="searchType == 1">sub like '%' || #{searchValue } || '%'</when>
+					<when test="searchType == 2">writer like '%' || #{searchValue } || '%'</when>
+				</choose>
+			</where>
+		</if>
+		order by num desc) a) where r_num between #{begin } and #{end }
+	</select>
+	<select id="detail" parameterType="int" resultType="uvo">
+		select * frpm upload where num = #{num }
+	</select>
+	<update id="update" parameterType="uvo">
+		update upload set
+	</update>
+	<delete id="delete" parameterType="int">
+	
+	</delete>
+</mapper>
