@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Spring container -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	<!-- Bean 등록 @Component: 일반 빈을 만들 때 @Repository: 자원 관련 빈을 만들 때 @Service: 
+		요청 -> Filter -> DispatcherServlet(Controller) -> @Controller(model) -> HandlerMapping(요청 
+		분석) -> 모델이 실행 -> @Service -> @Repository -> Database 처리(SqlSessionFactory) 
+		@Controller: Controller에 의해서 요청되는 모델 관련 빈을 만들 때 @RestController: RestFulAPI 
+		-> Json을 사비스하기 위해서 많이 사용함. @ControllerAdvice: AOP에서 공통 관심 사항을 advice라고 한다. 
+		Controller단에서 Advice를 적용하고 싶을 때 사용한다. 예) 예외 처리에 주로 사용함. @Configuration -->
+	<context:component-scan
+		base-package="kr.co.kosmo.mvc" />
+	<!-- Target, Advice mapping -->
+	<aop:aspectj-autoproxy />
+	<!-- URL mapping -->
+	<mvc:annotation-driven />
+
+	<mvc:resources location="/resources/"
+		mapping="/resources/**" />
+
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.naver.com" />
+		<property name="port" value="465" />
+		<property name="username" value="majh5548" />
+		<property name="password" value="" />
+		<property name="defaultEncoding" value="utf-8" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.debug">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.smtps.ssl.checkserveridentity">true</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtps.ssl.trust">*</prop>
+				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+				<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- View의 타입 -> viewResolver 설정 /WEB-INF/views/[hello].jsp -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- Tiles configure -->
+	<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>/WEB-INF/tiles/tiles-definitions.xml</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="tilesViewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.tiles3.TilesView" />
+		<property name="order" value="0" />
+	</bean>
+	<!-- Tiles configure -->
+
+</beans>

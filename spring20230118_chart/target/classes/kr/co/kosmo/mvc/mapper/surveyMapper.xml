@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="survey">
+	<insert id="insert" parameterType="survo">
+		insert into survey
+		values(survey_seq.nextVal, #{sub }, #{code }, sysdate)
+	</insert>
+
+	<!-- insert all -> open
+		into survey values('A', 1, '온다.', 0)
+		into survey values('B', 1, '안온다.', 0)
+		into survey values('C', 1, '모른다.', 0)
+		select * from dual -> close
+	-->
+	<insert id="insertContent" parameterType="java.util.List">
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+			select
+			survey_seq.currVal from dual
+		</selectKey>
+
+		<!-- for(String e: list) -->
+		<foreach collection="list" item="e" open="insert all"
+			close="select * from dual">
+			into surveycontent values(#{e.subtype }, #{id },
+			#{e.surveytitle }, 0)
+		</foreach>
+	</insert>
+
+	<resultMap type="survo" id="surview">
+		<id property="num" column="num" javaType="int" />
+		<result property="sub" column="sub" />
+		<result property="code" column="code" />
+		<result property="sdate" column="sdate" />
+		<result property="surveytotal" column="surveytotal"/>
+		<collection property="subvey" javaType="java.util.List" ofType="subvo">
+			<result property="subcode" column="subcode" javaType="int" />
+			<result property="subtype" column="subtype" />
+			<result property="surveytitle" column="surveytitle" />
+			<result property="surveycnt" column="surveycnt" javaType="int" />
+		</collection>
+	</resultMap>
+	<select id="detail" parameterType="int" resultMap="surview">
+		select
+		s.num,
+		s.sub, s.code, s.sdate,
+		sc.subtype, sc.subcode, sc.surveytitle,
+		sc.surveycnt
+		from survey s, surveycontent sc
+		where s.num = sc.subcode
+		and s.num = #{num }
+	</select>
+	<select id="list" resultMap="surview">
+		select s.num, s.sub, s.code,
+		sum(sc.surveycnt) surveytotal, s.sdate from survey s, surveycontent sc where
+		s.num
+		= sc.subcode group by s.num, s.sub, s.num, s.code, sc.subcode,
+		s.sdate order by 1 desc
+	</select>
+
+	<update id="updateSurveyCnt" parameterType="subvo">
+		update surveycontent
+		set surveycnt = surveycnt + 1 where subcode = #{subcode } and subtype
+		= #{subtype }
+	</update>
+</mapper>

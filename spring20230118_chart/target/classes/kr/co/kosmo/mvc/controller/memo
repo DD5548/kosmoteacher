@@ -1,0 +1,8 @@
+// 0104
+1. Form을 띄운다.
+2. 입력 처리를 한 후 DB에 확인 MyBoardController add() -> dao -> 입력
+3. 리스트를 출력시킨다. 2 -> 3 redirect List<BoardVO> Model, ModelAndView해서 view 전송
+4. 리스트에서 detail 출력
+5. detail 삭제 바튼을 만들어서 삭제를 구현한다.
+
+// 0105

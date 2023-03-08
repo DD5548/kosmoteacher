@@ -1,0 +1,9 @@
+공통 빈 설정
+공통되는 ApplicationContext에서 설정을 WAS의 메모리에 미리 로딩시킨 후 참조하는 방식.
+DispatcherServlet이 하나 이상일 때 두 콘트로라가 공통으로 적용해야하는 설정을 공통 빈 설정이라고 한다.
+예) mobile-kosmo, kosmo-servlet 즉 모바일과 PC 웹의 요청을 분류한 모델에서 적용
+DataSource, MyBatis 설정 등 두 스프링 콘테이나가 공유할 목적이 있는 bean을 대상으로 선정한다.
+
+모바일과 웹을 분리하기 위한 자바스크립트 코드
+원리는 navigator.userAgent 자바스크립트에서도 지원
+

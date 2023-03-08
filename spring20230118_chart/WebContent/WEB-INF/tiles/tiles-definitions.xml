@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- tiles 변수와 경로를 선언하면 template.jsp에 변수 이름으로 반영되어서 실제 tiles가 적용된다. -->
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="defaultTemplate" template="/WEB-INF/template/default/template.jsp">
+		<put-attribute name="header" value="/WEB-INF/template/default/header.jsp"/>
+		<put-attribute name="carousel" value="/WEB-INF/template/default/carousel.jsp"/>
+		<put-attribute name="menu" value="/WEB-INF/template/default/menu.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/template/default/footer.jsp"/>
+	</definition>
+	
+	<!-- 본문 시작 
+		body는 jsp 파일로 분리하는 것이  아니라 tiles가 불러오는 경로에서 제작한 views/member/member.jsp가 들어올 자리다
+		tiles의 요청의 파탄, body가 적용되는 view의 경로를 설정
+	 -->
+	<definition name="*/*" extends="defaultTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp"/>
+	</definition>
+</tiles-definitions>

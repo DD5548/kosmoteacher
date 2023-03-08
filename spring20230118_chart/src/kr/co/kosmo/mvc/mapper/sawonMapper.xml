@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sawon">
+	<!-- Collection(1:N)
+		DeptVO 안에 sawon의 List가 있기 때문애 type = "dvo"이다.
+	 -->
+	<resultMap type="dvo" id="deptsawonResult">
+		<id property="deptno" column="deptno" javaType="int" />
+		<result property="dname" column="dname" />
+		<!-- List<SawonVO> collection 지정 property = "sawon"인 이유는? private List<SawonVO> 
+			sawon -->
+		<collection property="sawon" javaType="java.util.List"
+			ofType="svo">
+			<id property="sabun" column="sabun" javaType="int" />
+			<result property="saname" column="saname" />
+			<result property="sajob" column="sajob" />
+			<result property="sapay" column="sapay" />
+		</collection>
+	</resultMap>
+	<select id="deptList" parameterType="int"
+		resultMap="deptsawonResult">
+		select
+		s.sabun, s.saname, s.sajob, s.sapay, d.deptno, d.dname
+		from sawon s,
+		dept d
+		where d.deptno = s.deptno and d.deptno = #{deptno }
+	</select>
+
+	<!-- Association(1:1) -->
+	<resultMap type="svo" id="sawonphoneResult">
+		<id property="sabun" column="sabun"/>
+		<result property="saname" column="saname"/>
+		<result property="sajob" column="sajob"/>
+		<!-- property = "sphone" getSphone()
+			column = "sabun" -> s.sabun sabun
+			javaType = "spvo": 참조하는 실제 VO
+		 -->
+		 <association property="spvo" column="sabun" javaType="spvo">
+		 	<id property="pnum" column="pnum"/>
+		 	<result property="pmodel" column="pmodel"/>
+		 	<result property="phnum" column="phnum"/>
+		 	<result property="pdate" column="pdate"/>
+		 </association>
+	</resultMap>
+	<select id="sawonList" resultMap="sawonphoneResult">
+		select s.sabun, s.saname,
+		s.sajob, p.pnum, p.pmodel, p.phnum, p.pdate from sawon s, sawon_phone
+		p where s.sabun = p.pnum(+)
+	</select>
+</mapper>
